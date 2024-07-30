@@ -1,6 +1,6 @@
-[gd_scene load_steps=71 format=3 uid="uid://cbglp50k7xqre"]
+[gd_scene load_steps=75 format=3 uid="uid://cbglp50k7xqre"]
 
-[ext_resource type="Script" path="res://player character/player.gd" id="1_few77"]
+[ext_resource type="Script" path="res://Instances_and_Scenes/player character/player.gd" id="1_few77"]
 [ext_resource type="Texture2D" uid="uid://c2n3h7iqdpry1" path="res://Assets/player character/Gun Witch Spritesheet.png" id="2_yaj0h"]
 [ext_resource type="Texture2D" uid="uid://d24jbiq6ldxev" path="res://Assets/player character/slime interactions/Shotgun Witch Spritemap (slime hit body).png" id="3_dnrql"]
 [ext_resource type="Texture2D" uid="uid://bbrkbvf2mxna" path="res://Assets/player character/slime interactions/Shotgun Witch Spritemap (slime hit head).png" id="4_d4xbm"]
@@ -74,6 +74,22 @@ atlas = ExtResource("2_yaj0h")
 region = Rect2(64, 32, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vgoe5"]
+atlas = ExtResource("2_yaj0h")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jk4qv"]
+atlas = ExtResource("2_yaj0h")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hl5ob"]
+atlas = ExtResource("2_yaj0h")
+region = Rect2(64, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2hlis"]
+atlas = ExtResource("2_yaj0h")
+region = Rect2(64, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xpy3x"]
 atlas = ExtResource("2_yaj0h")
 region = Rect2(0, 0, 32, 32)
 
@@ -355,6 +371,31 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_jk4qv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hl5ob")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jk4qv")
+}],
+"loop": false,
+"name": &"no ammo",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2hlis")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xpy3x")
+}],
+"loop": false,
+"name": &"reload",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_80pl5")
 }, {
 "duration": 1.0,
@@ -564,14 +605,14 @@ animations = [{
 "speed": 3.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_6ve5m"]
-size = Vector2(9, 6)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pb8my"]
 size = Vector2(5, 13)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_30vig"]
 size = Vector2(7, 7)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6ve5m"]
+size = Vector2(7, 5)
 
 [node name="Player" type="CharacterBody2D"]
 position = Vector2(179, 110)
@@ -580,35 +621,34 @@ metadata/_edit_group_ = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_be5w1")
-animation = &"death-slime_body"
-frame_progress = 0.620155
-
-[node name="Head_Collision" type="Area2D" parent="."]
-collision_layer = 2
-collision_mask = 2
-
-[node name="head_CollisionShape2D" type="CollisionShape2D" parent="Head_Collision"]
-position = Vector2(2.5, 1)
-shape = SubResource("RectangleShape2D_6ve5m")
+animation = &"reload"
 
 [node name="Player Collision" type="CollisionShape2D" parent="."]
 position = Vector2(2.5, 5.5)
 shape = SubResource("RectangleShape2D_pb8my")
 
-[node name="Body_Collision" type="Area2D" parent="."]
+[node name="body" type="Area2D" parent="."]
 collision_layer = 4
 collision_mask = 4
 
-[node name="body_CollisionShape2D" type="CollisionShape2D" parent="Body_Collision"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="body"]
 position = Vector2(2.5, 7.5)
 shape = SubResource("RectangleShape2D_30vig")
 
+[node name="head" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="head"]
+position = Vector2(2.5, 1.5)
+shape = SubResource("RectangleShape2D_6ve5m")
+
 [connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
-[connection signal="area_entered" from="Head_Collision" to="." method="_on_head_collision_area_entered"]
-[connection signal="area_entered" from="Head_Collision" to="." method="_on_area_2d_area_entered"]
-[connection signal="body_entered" from="Head_Collision" to="." method="_on_head_collision_body_entered"]
-[connection signal="body_shape_entered" from="Head_Collision" to="." method="_on_head_collision_body_shape_entered"]
-[connection signal="area_entered" from="Body_Collision" to="." method="_on_area_2d_area_entered"]
-[connection signal="area_entered" from="Body_Collision" to="." method="_on_body_collision_area_entered"]
-[connection signal="body_entered" from="Body_Collision" to="." method="_on_body_collision_body_entered"]
-[connection signal="body_shape_entered" from="Body_Collision" to="." method="_on_body_collision_body_shape_entered"]
+[connection signal="area_entered" from="body" to="." method="_on_area_2d_area_entered"]
+[connection signal="area_entered" from="body" to="." method="_on_body_collision_area_entered"]
+[connection signal="body_entered" from="body" to="." method="_on_body_collision_body_entered"]
+[connection signal="body_shape_entered" from="body" to="." method="_on_body_collision_body_shape_entered"]
+[connection signal="area_entered" from="head" to="." method="_on_area_2d_area_entered"]
+[connection signal="area_entered" from="head" to="." method="_on_head_collision_area_entered"]
+[connection signal="body_entered" from="head" to="." method="_on_head_collision_body_entered"]
+[connection signal="body_shape_entered" from="head" to="." method="_on_head_collision_body_shape_entered"]

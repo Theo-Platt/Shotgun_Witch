@@ -1,9 +1,16 @@
-[gd_scene load_steps=10 format=3 uid="uid://btn8dbfmbt7sw"]
+[gd_scene load_steps=23 format=3 uid="uid://btn8dbfmbt7sw"]
 
 [ext_resource type="Texture2D" uid="uid://cobxevidv01bc" path="res://Assets/HUD/life/Full Health.png" id="1_7ye8w"]
 [ext_resource type="Texture2D" uid="uid://bn7l157le1nj2" path="res://Assets/HUD/Orb.png" id="1_j2ipk"]
-[ext_resource type="Script" path="res://HUD/hud.gd" id="1_x8sg1"]
+[ext_resource type="Script" path="res://Instances_and_Scenes/HUD/hud.gd" id="1_x8sg1"]
+[ext_resource type="Texture2D" uid="uid://dg82b2y0tdl26" path="res://Assets/HUD/life/Empty Health.png" id="2_gvs51"]
 [ext_resource type="Texture2D" uid="uid://cfir2h38p7nui" path="res://Assets/HUD/ammo.png" id="2_oyfj2"]
+[ext_resource type="Texture2D" uid="uid://bmei2rd8s05ed" path="res://Assets/HUD/life/Low Health.png" id="4_yievm"]
+[ext_resource type="Texture2D" uid="uid://brnqk2hw1ft8q" path="res://Assets/HUD/life/Partial Health.png" id="5_n5njj"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nr00l"]
+atlas = ExtResource("2_gvs51")
+region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_i2ygq"]
 atlas = ExtResource("1_7ye8w")
@@ -21,12 +28,47 @@ region = Rect2(0, 32, 32, 32)
 atlas = ExtResource("1_7ye8w")
 region = Rect2(32, 32, 32, 32)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_4xrnv"]
+atlas = ExtResource("4_yievm")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_461o4"]
+atlas = ExtResource("4_yievm")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4vdqc"]
+atlas = ExtResource("4_yievm")
+region = Rect2(0, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g7vfa"]
+atlas = ExtResource("4_yievm")
+region = Rect2(32, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y8wgk"]
+atlas = ExtResource("5_n5njj")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7d8lf"]
+atlas = ExtResource("5_n5njj")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q2o4h"]
+atlas = ExtResource("5_n5njj")
+region = Rect2(0, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_piawn"]
+atlas = ExtResource("5_n5njj")
+region = Rect2(32, 32, 32, 32)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_upr3m"]
 animations = [{
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nr00l")
+}],
 "loop": true,
 "name": &"Empty Health",
-"speed": 5.0
+"speed": 1.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -43,18 +85,45 @@ animations = [{
 }],
 "loop": true,
 "name": &"Full Health",
-"speed": 5.0
+"speed": 3.0
 }, {
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4xrnv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_461o4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4vdqc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g7vfa")
+}],
 "loop": true,
 "name": &"Low Health",
-"speed": 5.0
+"speed": 7.0
 }, {
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y8wgk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7d8lf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q2o4h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_piawn")
+}],
 "loop": true,
 "name": &"Partial Health",
 "speed": 5.0
 }]
+
+[sub_resource type="LabelSettings" id="LabelSettings_gsgt5"]
+font_color = Color(0.205117, 0.205117, 0.205117, 1)
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_x8sg1")
@@ -63,7 +132,7 @@ script = ExtResource("1_x8sg1")
 position = Vector2(356, 28)
 scale = Vector2(3.25, 3.25)
 sprite_frames = SubResource("SpriteFrames_upr3m")
-animation = &"Full Health"
+animation = &"Low Health"
 
 [node name="Ammo Tracker" type="Node" parent="."]
 
@@ -97,6 +166,8 @@ offset_bottom = 39.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_shadow_color = Color(0.589096, 0.589096, 0.589096, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+text = "0"
+label_settings = SubResource("LabelSettings_gsgt5")
 horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
@@ -133,5 +204,8 @@ text = "Begin Game"
 [node name="Timer" type="Timer" parent="."]
 wait_time = 3.0
 
+[node name="ScoreTimer" type="Timer" parent="."]
+
 [connection signal="pressed" from="StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="ScoreTimer" to="." method="_on_score_timeout"]

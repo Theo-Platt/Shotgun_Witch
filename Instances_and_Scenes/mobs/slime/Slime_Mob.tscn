@@ -1,6 +1,6 @@
 [gd_scene load_steps=22 format=3 uid="uid://bgriuffvjnycc"]
 
-[ext_resource type="Script" path="res://mobs/slime/slime.gd" id="1_7qy1h"]
+[ext_resource type="Script" path="res://Instances_and_Scenes/mobs/slime/slime.gd" id="1_7qy1h"]
 [ext_resource type="Texture2D" uid="uid://bw5fioemesyx1" path="res://Assets/mobs/slime mob/Slime Mob Spritesheet.png" id="2_jmaqf"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ij3jm"]
@@ -157,7 +157,7 @@ height = 15.0
 radius = 5.0
 height = 15.0
 
-[node name="Slime Mob" type="CharacterBody2D"]
+[node name="Slime Mob" type="CharacterBody2D" groups=["slime"]]
 position = Vector2(5, 0)
 collision_layer = 7
 collision_mask = 7

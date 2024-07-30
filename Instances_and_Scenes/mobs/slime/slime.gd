@@ -1,5 +1,10 @@
 extends CharacterBody2D
 
+###########
+# Signals #
+###########
+
+
 ######################
 # Exported Variables #
 ######################
@@ -20,17 +25,10 @@ var action_timer                                            # float: timeout unt
 var mirror_sprite                                           # bool:   keeps track of sprite direction
 
 
-
-###########
-# Signals #
-###########
-#none :D
-
-
 ###################
 # Signal Handlers #
 ###################
-# when any animation finishes, do something
+# Handle animation finishing
 func _on_animated_sprite_2d_animation_finished():
 	if state == S_JUMP: 
 		state = S_FALL_1
@@ -41,39 +39,27 @@ func _on_animated_sprite_2d_animation_finished():
 		print("slime involuntarily-terminating")
 		self.queue_free()
 
-# destroy slime object when it hits the player (player sprite will represent this)
-func _on_player_hit():
-	print("slime self-terminating")
-	self.queue_free()
-
-# if shot, die. TODO this REALLY aught to be done using a collision box. it didnt work originally, but go figure it out. Idea: player has an always on box, slime keeps a variable boolean 'in_range' that sets true when within the box and false when leaving. then just die if in_range.
+# Handle being shot at
 func _ive_been_shot(player):
 	var player_facing_right = player.mirror_sprite
-	print("px:"+str(player.position.x)+" right?:"+str(player_facing_right)+" p_range:"+str(player.range))
 	
 	#is the player facing the slime?
 	if (player.position.x < position.x && player_facing_right) || (player.position.x > position.x && !player_facing_right):
+		
 		#is the player at (roughly) the same height as the slime?
 		if player.position.y - player.spread < position.y && player.position.y + player.spread > position.y: #above slime
 			
 			#is the player in range of the smime?
 			var slime_distance = position.x - player.position.x
-			print("sx:"+str(position.x)+" sd:"+str(slime_distance))
 			if player_facing_right && slime_distance < player.range:
 				state=S_DIE
 			elif !player_facing_right && slime_distance > -player.range:
 				state=S_DIE
 
+
 #####################
 # Utility Functions #
 #####################
-# plays the animation passed as a parameter, second parameter unlocks the mirror_sprite var from changing
-func play_animation(animation, do_mirror_flip = true):
-	if do_mirror_flip: mirror_sprite = position.x < player.position.x
-	$AnimatedSprite2D.flip_h = mirror_sprite
-	$AnimatedSprite2D.animation = animation
-	$AnimatedSprite2D.play()
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	play_animation("default")
@@ -100,6 +86,12 @@ func _process(delta):
 	
 	move_and_slide()
 
+# plays the animation passed as a parameter, second parameter unlocks the mirror_sprite var from changing
+func play_animation(animation, do_mirror_flip = true):
+	if do_mirror_flip: mirror_sprite = position.x < player.position.x
+	$AnimatedSprite2D.flip_h = mirror_sprite
+	$AnimatedSprite2D.animation = animation
+	$AnimatedSprite2D.play()
 
 ###################
 # Slime Functions #

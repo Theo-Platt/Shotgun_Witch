@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
 ######################
-# Exported Variables #
+# Public Variables #
 ######################
 @export var speed = 10000
 @export var health = 3
@@ -13,9 +13,9 @@ extends CharacterBody2D
 @export var ammo_count = 3
 
 
-####################
-# Global Variables #
-####################
+#####################
+# Private Variables #
+#####################
 var screen_size                        # huh...: size of the screen
 var speed_multiplier                   # float:  modifier on the x-direction speed
 var can_move                           # bool:   defines whether the player is allowed to perform inputs
@@ -26,13 +26,13 @@ var jump_primer                        # enum:   keeps track of the current Jump
 enum {D_NONE, D_SLIME_HEAD, D_SLIME_BODY}
 var death_state
 var mutex_because_im_mad_at_this_FUCKING_RACE_CONDITION
+var reloading
 
 
 ###########
 # Signals #
 ###########
-signal hit  # tell Mob that they hit the player
-signal die  # tell main that the player is dead
+signal hit(health)  # tell Mob that they hit the player
 signal fire# tell Mob that it has been SHOT
 signal update_ammo
 
@@ -43,27 +43,34 @@ signal update_ammo
 # when any animation finishes, do something
 func _on_animated_sprite_2d_animation_finished():
 	if health <= 0: 
-		die.emit()
 		if   death_state == D_SLIME_BODY: play_animation("death-slime_body")
 		elif death_state == D_SLIME_HEAD: play_animation("death-slime_head")
 	else:
 		can_move = true
 		if jump_primer == J_PREP: jump_primer = J_AIR
-		$Head_Collision/head_CollisionShape2D.disabled = false
-		$Body_Collision/body_CollisionShape2D.disabled = false
-		mutex_because_im_mad_at_this_FUCKING_RACE_CONDITION=true
+		$"head/CollisionShape2D".disabled = false
+		$"body/CollisionShape2D".disabled = false
+		if !mutex_because_im_mad_at_this_FUCKING_RACE_CONDITION:
+			if ammo_count > 0:
+				ammo_count-=1
+			mutex_because_im_mad_at_this_FUCKING_RACE_CONDITION=true
+		update_ammo.emit()
+		if reloading: 
+			reloading = false
+			ammo_count+=1
+		if ammo_count < 0: ammo_count = 0
+		update_ammo.emit()
 
 # handle collisions with the head
 func _on_head_collision_body_entered(body):
 	if mutex_because_im_mad_at_this_FUCKING_RACE_CONDITION:
 		mutex_because_im_mad_at_this_FUCKING_RACE_CONDITION=false
+		health = health - 1;
 		can_move=false
-		hit.emit()
-		$Head_Collision/head_CollisionShape2D.set_deferred("disabled", true)
-		$Body_Collision/body_CollisionShape2D.set_deferred("disabled", true)
-		health -= 1;
-		print("slime eating ya brain! Health is now:")
-		print(health)
+		
+		$"head/CollisionShape2D".set_deferred("disabled", true)
+		$"body/CollisionShape2D".set_deferred("disabled", true)
+		hit.emit(health)
 		if health > 0: 
 			play_animation("slime_head_damage")
 		else:
@@ -74,13 +81,11 @@ func _on_head_collision_body_entered(body):
 func _on_body_collision_body_entered(body):
 	if mutex_because_im_mad_at_this_FUCKING_RACE_CONDITION:
 		mutex_because_im_mad_at_this_FUCKING_RACE_CONDITION=false
+		health = health - 1;
 		can_move=false
-		hit.emit()
-		$Head_Collision/head_CollisionShape2D.set_deferred("disabled", true)
-		$Body_Collision/body_CollisionShape2D.set_deferred("disabled", true)
-		health -= 1;
-		print("slime eating ya torso! Health is now:")
-		print(health)
+		$"head/CollisionShape2D".set_deferred("disabled", true)
+		$"body/CollisionShape2D".set_deferred("disabled", true)
+		hit.emit(health)
 		if health > 0: 
 			play_animation("slime_body_damage")
 		else:
@@ -91,22 +96,11 @@ func _on_body_collision_body_entered(body):
 #####################
 # Utility Functions #
 #####################
-# plays the animation passed as a parameter
-func play_animation(animation):
-	#print(animation)
-	$AnimatedSprite2D.flip_h = mirror_sprite
-	$AnimatedSprite2D.animation = animation
-	$AnimatedSprite2D.play()
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	screen_size = get_viewport_rect().size
-	can_move = true
-	mirror_sprite = false
-	jump_primer = J_GROUND
-	speed_multiplier = 1.0
-	grounded = true
-	death_state = D_NONE
+	start(0,0)
+	can_move = false
+	hide()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -117,6 +111,11 @@ func _process(delta):
 	if Input.is_action_just_pressed("shoot") && is_on_floor() && can_move: 
 		shoot_pressed()
 	
+	if Input.is_action_just_pressed("reload")&& is_on_floor() && can_move:
+		if ammo_count < 3:
+			print("reloading")
+			reload()
+	
 	
 	################
 	# Jump Handler #
@@ -126,7 +125,7 @@ func _process(delta):
 	if is_on_floor():  
 		# if on the ground but not grounded, the ground was just touched this frame. Play landing animation
 		if !grounded:
-			land_from_fall()
+			land()
 		
 		# jump if possible
 		if Input.is_action_just_pressed("jump") && can_move: 
@@ -170,6 +169,28 @@ func _process(delta):
 	move_and_slide()
 	position = position.clamp(Vector2.ZERO, screen_size)
 
+# plays the animation passed as a parameter
+func play_animation(animation):
+	#print(animation)
+	$AnimatedSprite2D.flip_h = mirror_sprite
+	$AnimatedSprite2D.animation = animation
+	$AnimatedSprite2D.play()
+
+# sets all vars to defaults and position to x,y
+func start(x,y):
+	position.x = x
+	position.y = y
+	screen_size = get_viewport_rect().size
+	can_move = false
+	mirror_sprite = false
+	jump_primer = J_GROUND
+	speed_multiplier = 1.0
+	grounded = true
+	death_state = D_NONE
+	reloading=false
+	ammo_count = 3
+	health = 3
+	show()
 
 ##################
 # Jump Functions #
@@ -193,7 +214,7 @@ func jump():
 	jump_primer = J_GROUND
 
 # handle hitting the ground after experiencing "gravity"
-func land_from_fall():
+func land():
 	can_move = false
 	if speed_multiplier > 0.80: # TODO ha ha, its based on your speed multiplier not the distance you fell. Yes I am mean. yes I will change this once the game has actual drops.
 		play_animation("faceplant")
@@ -209,7 +230,13 @@ func shoot_pressed():
 	can_move = false
 	if ammo_count > 0:
 		ammo_count -= 1
-		update_ammo.emit()
 		fire.emit()
 		play_animation("fire")
+		
+	else:
+		play_animation("no ammo")
 
+func reload():
+	can_move =false
+	reloading=true
+	play_animation("reload")
