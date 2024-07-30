@@ -8,6 +8,9 @@ extends CharacterBody2D
 @export var gravity = 9.8
 @export var jump_height_min = 180
 @export var jump_height_max = 215
+@export var range = 60
+@export var spread = 15
+@export var ammo_count = 3
 
 
 ####################
@@ -22,7 +25,7 @@ enum {J_GROUND, J_PREP, J_AIR, J_FALL} # enum:   Jump enumerator for different s
 var jump_primer                        # enum:   keeps track of the current Jump enum value
 enum {D_NONE, D_SLIME_HEAD, D_SLIME_BODY}
 var death_state
-var mutex_because_im_mad
+var mutex_because_im_mad_at_this_FUCKING_RACE_CONDITION
 
 
 ###########
@@ -30,7 +33,8 @@ var mutex_because_im_mad
 ###########
 signal hit  # tell Mob that they hit the player
 signal die  # tell main that the player is dead
-signal fire(direction) # tell Mob that it has been SHOT
+signal fire# tell Mob that it has been SHOT
+signal update_ammo
 
 
 ###################
@@ -47,13 +51,12 @@ func _on_animated_sprite_2d_animation_finished():
 		if jump_primer == J_PREP: jump_primer = J_AIR
 		$Head_Collision/head_CollisionShape2D.disabled = false
 		$Body_Collision/body_CollisionShape2D.disabled = false
-		mutex_because_im_mad=true
-
+		mutex_because_im_mad_at_this_FUCKING_RACE_CONDITION=true
 
 # handle collisions with the head
 func _on_head_collision_body_entered(body):
-	if mutex_because_im_mad:
-		mutex_because_im_mad=false
+	if mutex_because_im_mad_at_this_FUCKING_RACE_CONDITION:
+		mutex_because_im_mad_at_this_FUCKING_RACE_CONDITION=false
 		can_move=false
 		hit.emit()
 		$Head_Collision/head_CollisionShape2D.set_deferred("disabled", true)
@@ -69,8 +72,8 @@ func _on_head_collision_body_entered(body):
 
 # handle collisions with the body
 func _on_body_collision_body_entered(body):
-	if mutex_because_im_mad:
-		mutex_because_im_mad=false
+	if mutex_because_im_mad_at_this_FUCKING_RACE_CONDITION:
+		mutex_because_im_mad_at_this_FUCKING_RACE_CONDITION=false
 		can_move=false
 		hit.emit()
 		$Head_Collision/head_CollisionShape2D.set_deferred("disabled", true)
@@ -204,6 +207,9 @@ func land_from_fall():
 # play the shoot animation and emit the fire signal
 func shoot_pressed():
 	can_move = false
-	fire.emit(mirror_sprite)
-	play_animation("fire")
+	if ammo_count > 0:
+		ammo_count -= 1
+		update_ammo.emit()
+		fire.emit()
+		play_animation("fire")
 

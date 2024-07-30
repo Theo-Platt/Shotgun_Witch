@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://cpdrdc32otbx6"]
+[gd_scene load_steps=11 format=3 uid="uid://cpdrdc32otbx6"]
 
 [ext_resource type="PackedScene" uid="uid://cbglp50k7xqre" path="res://player character/player.tscn" id="1_523ka"]
 [ext_resource type="Script" path="res://main.gd" id="1_lypa7"]
 [ext_resource type="Texture2D" uid="uid://dx8vnwkyrxmyl" path="res://Assets/env/grass/grass Spritesheet.png" id="1_qjgau"]
 [ext_resource type="PackedScene" uid="uid://bgriuffvjnycc" path="res://mobs/slime/Slime_Mob.tscn" id="2_xeio1"]
+[ext_resource type="PackedScene" uid="uid://btn8dbfmbt7sw" path="res://HUD/hud.tscn" id="5_b04qg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_loclx"]
 texture = ExtResource("1_qjgau")
@@ -32,41 +33,29 @@ position = Vector2(370, 193)
 
 [node name="spawnpoints" type="Node" parent="."]
 
-[node name="spawnpoint_1" type="StaticBody2D" parent="spawnpoints"]
-position = Vector2(-15, -14)
+[node name="1" type="Node" parent="spawnpoints"]
 
-[node name="spawnpoint_2" type="StaticBody2D" parent="spawnpoints"]
-position = Vector2(427, -18)
+[node name="2" type="Node" parent="spawnpoints"]
 
-[node name="spawnpoint_3" type="StaticBody2D" parent="spawnpoints"]
-position = Vector2(-241, -89)
+[node name="3" type="Node" parent="spawnpoints"]
 
-[node name="spawnpoint_4" type="StaticBody2D" parent="spawnpoints"]
-position = Vector2(-188, 56)
+[node name="4" type="Node" parent="spawnpoints"]
 
-[node name="spawnpoint_5" type="StaticBody2D" parent="spawnpoints"]
-position = Vector2(628, -98)
+[node name="5" type="Node" parent="spawnpoints"]
 
-[node name="spawnpoint_6" type="StaticBody2D" parent="spawnpoints"]
-position = Vector2(578, -27)
+[node name="6" type="Node" parent="spawnpoints"]
 
-[node name="spawnpoint_7" type="StaticBody2D" parent="spawnpoints"]
-position = Vector2(674, -26)
+[node name="7" type="Node" parent="spawnpoints"]
 
-[node name="spawnpoint_8" type="StaticBody2D" parent="spawnpoints"]
-position = Vector2(-152, -93)
+[node name="8" type="Node" parent="spawnpoints"]
 
-[node name="spawnpoint_9" type="StaticBody2D" parent="spawnpoints"]
-position = Vector2(-96, -29)
+[node name="9" type="Node" parent="spawnpoints"]
 
-[node name="spawnpoint_10" type="StaticBody2D" parent="spawnpoints"]
-position = Vector2(510, 142)
+[node name="10" type="Node" parent="spawnpoints"]
 
-[node name="spawnpoint_11" type="StaticBody2D" parent="spawnpoints"]
-position = Vector2(740, 169)
+[node name="11" type="Node" parent="spawnpoints"]
 
-[node name="spawnpoint_12" type="StaticBody2D" parent="spawnpoints"]
-position = Vector2(-292, 180)
+[node name="12" type="Node" parent="spawnpoints"]
 
 [node name="World" type="StaticBody2D" parent="."]
 metadata/_edit_group_ = true
@@ -89,7 +78,13 @@ position = Vector2(792, 56)
 shape = SubResource("RectangleShape2D_7c85a")
 
 [node name="mob timer" type="Timer" parent="."]
-wait_time = 1.1
+wait_time = 2.0
+
+[node name="Debug_Cam" type="Camera2D" parent="."]
+position = Vector2(188, -41)
+zoom = Vector2(0.3, 0.3)
+
+[node name="HUD" parent="." instance=ExtResource("5_b04qg")]
 
 [connection signal="fire" from="Player" to="." method="_on_player_fire"]
 [connection signal="hit" from="Player" to="." method="_on_player_hit"]

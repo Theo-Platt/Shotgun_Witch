@@ -1,0 +1,137 @@
+[gd_scene load_steps=10 format=3 uid="uid://btn8dbfmbt7sw"]
+
+[ext_resource type="Texture2D" uid="uid://cobxevidv01bc" path="res://Assets/HUD/life/Full Health.png" id="1_7ye8w"]
+[ext_resource type="Texture2D" uid="uid://bn7l157le1nj2" path="res://Assets/HUD/Orb.png" id="1_j2ipk"]
+[ext_resource type="Script" path="res://HUD/hud.gd" id="1_x8sg1"]
+[ext_resource type="Texture2D" uid="uid://cfir2h38p7nui" path="res://Assets/HUD/ammo.png" id="2_oyfj2"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i2ygq"]
+atlas = ExtResource("1_7ye8w")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n1b7o"]
+atlas = ExtResource("1_7ye8w")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_deqe8"]
+atlas = ExtResource("1_7ye8w")
+region = Rect2(0, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_535k3"]
+atlas = ExtResource("1_7ye8w")
+region = Rect2(32, 32, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_upr3m"]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"Empty Health",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i2ygq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n1b7o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_deqe8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_535k3")
+}],
+"loop": true,
+"name": &"Full Health",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"Low Health",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"Partial Health",
+"speed": 5.0
+}]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_x8sg1")
+
+[node name="Health Tracker" type="AnimatedSprite2D" parent="."]
+position = Vector2(356, 28)
+scale = Vector2(3.25, 3.25)
+sprite_frames = SubResource("SpriteFrames_upr3m")
+animation = &"Full Health"
+
+[node name="Ammo Tracker" type="Node" parent="."]
+
+[node name="shell1" type="Sprite2D" parent="Ammo Tracker"]
+position = Vector2(314, 14)
+texture = ExtResource("2_oyfj2")
+vframes = 2
+
+[node name="shell2" type="Sprite2D" parent="Ammo Tracker"]
+position = Vector2(314, 28)
+texture = ExtResource("2_oyfj2")
+vframes = 2
+
+[node name="shell3" type="Sprite2D" parent="Ammo Tracker"]
+position = Vector2(314, 42)
+texture = ExtResource("2_oyfj2")
+vframes = 2
+
+[node name="Score Tracker" type="Node" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="Score Tracker"]
+position = Vector2(28, 28)
+scale = Vector2(3.25, 3.25)
+texture = ExtResource("1_j2ipk")
+
+[node name="Score_Label" type="Label" parent="Score Tracker"]
+offset_left = 7.0
+offset_top = 16.0
+offset_right = 49.0
+offset_bottom = 39.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.589096, 0.589096, 0.589096, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+text_overrun_behavior = 3
+uppercase = true
+metadata/_edit_use_anchors_ = true
+
+[node name="Message" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -81.0
+offset_right = 81.0
+offset_bottom = 83.0
+grow_horizontal = 2
+text = "Game Label ;p"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartButton" type="Button" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -59.5
+offset_top = -74.0
+offset_right = 59.5
+offset_bottom = -35.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Begin Game"
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 3.0
+
+[connection signal="pressed" from="StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

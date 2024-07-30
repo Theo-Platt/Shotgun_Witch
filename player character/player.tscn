@@ -580,9 +580,8 @@ metadata/_edit_group_ = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_be5w1")
-animation = &"fire"
-frame = 2
-frame_progress = 0.0335496
+animation = &"death-slime_body"
+frame_progress = 0.620155
 
 [node name="Head_Collision" type="Area2D" parent="."]
 collision_layer = 2

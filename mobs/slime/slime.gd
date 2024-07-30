@@ -46,10 +46,23 @@ func _on_player_hit():
 	print("slime self-terminating")
 	self.queue_free()
 
-# if shot, die.
-func _ive_been_shot(player_x, direction):
-	if (player_x < position.x && direction) || (player_x > position.x && !direction):
-		state=S_DIE
+# if shot, die. TODO this REALLY aught to be done using a collision box. it didnt work originally, but go figure it out. Idea: player has an always on box, slime keeps a variable boolean 'in_range' that sets true when within the box and false when leaving. then just die if in_range.
+func _ive_been_shot(player):
+	var player_facing_right = player.mirror_sprite
+	print("px:"+str(player.position.x)+" right?:"+str(player_facing_right)+" p_range:"+str(player.range))
+	
+	#is the player facing the slime?
+	if (player.position.x < position.x && player_facing_right) || (player.position.x > position.x && !player_facing_right):
+		#is the player at (roughly) the same height as the slime?
+		if player.position.y - player.spread < position.y && player.position.y + player.spread > position.y: #above slime
+			
+			#is the player in range of the smime?
+			var slime_distance = position.x - player.position.x
+			print("sx:"+str(position.x)+" sd:"+str(slime_distance))
+			if player_facing_right && slime_distance < player.range:
+				state=S_DIE
+			elif !player_facing_right && slime_distance > -player.range:
+				state=S_DIE
 
 #####################
 # Utility Functions #
