@@ -3,11 +3,11 @@ extends CharacterBody2D
 ######################
 # Public Variables #
 ######################
-@export var speed = 10000
+@export var speed = 100
 @export var health = 3
 @export var gravity = 9.8
-@export var jump_height_min = 180
-@export var jump_height_max = 215
+@export var jump_height_min = 130
+@export var jump_height_max = 160
 @export var range = 60
 @export var spread = 15
 @export var ammo_count = 3
@@ -160,7 +160,7 @@ func _process(delta):
 		if is_on_floor() && can_move: play_animation("walk")
 	else:
 		if is_on_floor() && can_move: play_animation("stand")
-	velocity.x *= speed * delta * speed_multiplier
+	velocity.x *= speed * speed_multiplier
 	
 	#####################
 	# movement & camera #
@@ -206,7 +206,7 @@ func jump():
 	# Far jump
 	if Input.is_action_pressed("jump"):
 		velocity.y = -jump_height_max
-		speed_multiplier = .95
+		speed_multiplier = 1.1
 	# Short jump
 	else: 
 		velocity.y = -jump_height_min

@@ -19,11 +19,6 @@ var score = 0
 ###################
 # Signal Handlers #
 ###################
-# score timer elapsed
-func _on_score_timeout():
-	score = score + 1
-	update_score(score)
-
 # start button pressed
 func _on_start_button_pressed():
 	$"Health Tracker".animation="Full Health"
@@ -42,13 +37,13 @@ func _on_start_button_pressed():
 func game_over():
 	show_message("Game Over")
 	$ScoreTimer.stop()
-	#await get_tree().create_timer(5).timeout
+	await get_tree().create_timer(5).timeout
 	
-	#$Message.text = "Shotgun Witch"
-	#$Message.show()
+	$Message.text = "Shotgun Witch"
+	$Message.show()
 	# Make a one-shot timer and wait for it to finish.
-	#await get_tree().create_timer(2).timeout
-	#$StartButton.show()
+	await get_tree().create_timer(2).timeout
+	$StartButton.show()
 
 
 ###############

@@ -3,15 +3,14 @@ extends CharacterBody2D
 ###########
 # Signals #
 ###########
-
+signal score_increase
 
 ######################
 # Exported Variables #
 ######################
 @export var player = CharacterBody2D
 @export var action_frequency = 1000
-@export var gravity = 9.8
-var id = -1
+@export var gravity = 11
 
 
 ####################
@@ -36,6 +35,7 @@ func _on_animated_sprite_2d_animation_finished():
 		velocity.x = 0
 		state = S_DEFAULT
 	if state == S_DIE:
+		score_increase.emit()
 		print("slime involuntarily-terminating")
 		self.queue_free()
 
@@ -100,7 +100,7 @@ func play_animation(animation, do_mirror_flip = true):
 func fall(delta):
 	play_animation("fall", false)
 	if is_on_floor() && state == S_FALL_1:
-		var hops = [100,100,150,150,200,200,250,250,300,400,500]
+		var hops = [50,100,100,100,150,150,200,200,250,250,300,400]
 		jump_height = hops[randi() % hops.size()]
 		jump_distance = jump_height / 2
 		velocity.x =  jump_distance
@@ -111,21 +111,12 @@ func fall(delta):
 		velocity.x /= 50
 		state = S_LAND
 	else:
-		var dx = (jump_distance/40)*delta
+		var dx = (jump_distance/25) * delta 
 		if velocity.x < 0: dx*=-1
 		velocity.x += dx
 		velocity.y += gravity
 
 #plays the death animation then removes this Mob.
 func die():
+	$"Area2D/CollisionShape2D".set_deferred("disabled", true)
 	play_animation("die")
-	pass
-
-
-
-
-
-
-
-
-

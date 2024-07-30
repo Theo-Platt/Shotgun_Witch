@@ -1,10 +1,17 @@
-[gd_scene load_steps=11 format=3 uid="uid://cpdrdc32otbx6"]
+[gd_scene load_steps=13 format=3 uid="uid://cpdrdc32otbx6"]
 
 [ext_resource type="PackedScene" uid="uid://cbglp50k7xqre" path="res://Instances_and_Scenes/player character/player.tscn" id="1_523ka"]
 [ext_resource type="Script" path="res://main.gd" id="1_lypa7"]
 [ext_resource type="Texture2D" uid="uid://dx8vnwkyrxmyl" path="res://Assets/env/grass/grass Spritesheet.png" id="1_qjgau"]
 [ext_resource type="PackedScene" uid="uid://bgriuffvjnycc" path="res://Instances_and_Scenes/mobs/slime/Slime_Mob.tscn" id="2_xeio1"]
+[ext_resource type="PackedScene" uid="uid://c718sivacfbog" path="res://shade_mob.tscn" id="3_tghlp"]
 [ext_resource type="PackedScene" uid="uid://btn8dbfmbt7sw" path="res://Instances_and_Scenes/HUD/hud.tscn" id="5_b04qg"]
+
+[sub_resource type="Curve2D" id="Curve2D_sefok"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 429, 48.7655, 0, 0, 0, 0, 429, 254.775)
+}
+point_count = 2
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_loclx"]
 texture = ExtResource("1_qjgau")
@@ -27,6 +34,7 @@ size = Vector2(16, 304)
 [node name="Main" type="Node"]
 script = ExtResource("1_lypa7")
 slime_scene = ExtResource("2_xeio1")
+shade_scene = ExtResource("3_tghlp")
 
 [node name="Player" parent="." instance=ExtResource("1_523ka")]
 position = Vector2(370, 193)
@@ -71,6 +79,15 @@ position = Vector2(-88, -20)
 
 [node name="Player_spawnpoint" type="StaticBody2D" parent="spawnpoints"]
 position = Vector2(196, 74)
+
+[node name="shade_spawns" type="Path2D" parent="spawnpoints"]
+position = Vector2(51, -49)
+scale = Vector2(1, 1.00481)
+curve = SubResource("Curve2D_sefok")
+
+[node name="shade_path" type="PathFollow2D" parent="spawnpoints/shade_spawns"]
+position = Vector2(429, 48.7655)
+rotation = 1.5708
 
 [node name="World" type="StaticBody2D" parent="."]
 metadata/_edit_group_ = true

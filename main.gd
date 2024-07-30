@@ -1,6 +1,7 @@
 extends Node
 
 @export var slime_scene: PackedScene
+@export var shade_scene: PackedScene
 signal player_hit
 signal kill_slime
 signal p_health(health)
@@ -9,8 +10,8 @@ signal message(message)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	Engine.max_fps = 30
 	$Player.update_ammo.connect(self.sig_ammo_update)
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -23,11 +24,32 @@ func sig_ammo_update():
 	$HUD.update_ammo($Player.ammo_count)
 
 func _on_mob_timer_timeout():
+	##########
+	## Shade #
+	##########
+	#var shade = shade_scene.instantiate()
+	#var spawn = $"spawnpoints/shade_spawns/shade_path"
+	#spawn.progress_ratio = randf()
+	#var direction = PI
+	#shade.position = spawn.position
+	#var velocity = Vector2(randf_range(40.0, 75.0), 0.0)
+	#shade.linear_velocity = velocity.rotated(direction)
+	#add_child(shade)
+	
+	
+	
+	#########
+	# Slime #
+	#########
 	print("spawning slime!")
+	if $HUD.score > 50:  $"mob timer".wait_time = 1.5
+	if $HUD.score > 100: $"mob timer".wait_time = 1.0
+	if $HUD.score > 150: $"mob timer".wait_time = .75
 	var mob = slime_scene.instantiate()
 	
 	mob.player = $Player
 	self.kill_slime.connect(mob._ive_been_shot)
+	mob.score_increase.connect(self.score_increase)
 	#_on_player_hit
 	var mob_spawn_location
 	var spawnpoints = [$"spawnpoints/1",$"spawnpoints/2",$"spawnpoints/3",$"spawnpoints/4",$"spawnpoints/5",$"spawnpoints/6",$"spawnpoints/7",$"spawnpoints/8",$"spawnpoints/9",$"spawnpoints/10",$"spawnpoints/11",$"spawnpoints/12",]
@@ -46,9 +68,14 @@ func _on_player_hit(health):
 
 func _on_hud_start_game():
 	$"mob timer".start()
+	$HUD.score = 0
 	$Player.start($"spawnpoints/Player_spawnpoint".position.x,$"spawnpoints/Player_spawnpoint".position.y)
 
 func gameover():
 	$"mob timer".stop()
 	get_tree().call_group("slime", "queue_free")
 	$HUD.game_over()
+
+func score_increase():
+	$HUD.score += 5
+	$HUD.update_score($HUD.score)
