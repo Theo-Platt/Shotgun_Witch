@@ -2,8 +2,14 @@ extends Node
 
 @export var slime_scene: PackedScene
 @export var shade_scene: PackedScene
+
+#shooting stuff
+@export var projectile_scene: PackedScene
+@export var projectile_count = 8
+@export var projectile_spread = PI/60
+@export var projectile_speed = 200
+
 signal player_hit
-signal kill_slime
 signal p_health(health)
 signal p_ammo(ammo)
 signal message(message)
@@ -17,8 +23,8 @@ func _ready():
 func _process(delta):
 	pass
 
-func _on_player_fire():
-	kill_slime.emit($Player)
+func _on_player_fire(facing_left):
+	spawn_projectiles(facing_left)
 
 func sig_ammo_update():
 	$HUD.update_ammo($Player.ammo_count)
@@ -48,7 +54,6 @@ func _on_mob_timer_timeout():
 	var mob = slime_scene.instantiate()
 	
 	mob.player = $Player
-	self.kill_slime.connect(mob._ive_been_shot)
 	mob.score_increase.connect(self.score_increase)
 	#_on_player_hit
 	var mob_spawn_location
@@ -79,3 +84,14 @@ func gameover():
 func score_increase():
 	$HUD.score += 5
 	$HUD.update_score($HUD.score)
+
+func spawn_projectiles(facing_left):
+	for i in projectile_count:
+		var projectile = projectile_scene.instantiate()
+		projectile.speed = projectile_speed
+		if !facing_left: projectile.rotation = PI
+		else: projectile.rotation = 0
+		projectile.rotation += randf_range(-projectile_spread, projectile_spread)
+		projectile.position.x = $Player.position.x
+		projectile.position.y = $Player.position.y + 4
+		add_child(projectile)
