@@ -1,36 +1,22 @@
-[gd_scene load_steps=5 format=3 uid="uid://db8wkkbjs2h"]
+[gd_scene load_steps=6 format=3 uid="uid://db8wkkbjs2h"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_20a72"]
 [ext_resource type="PackedScene" uid="uid://cbglp50k7xqre" path="res://Player/player.tscn" id="1_obh00"]
+[ext_resource type="PackedScene" uid="uid://d06f42q8lbkc8" path="res://Levels/debug_level.tscn" id="2_6u0xc"]
 [ext_resource type="PackedScene" uid="uid://btn8dbfmbt7sw" path="res://HUD/hud.tscn" id="2_rqcna"]
 [ext_resource type="PackedScene" uid="uid://b7sw7id3n86uw" path="res://Player/gun.tscn" id="3_f8i8b"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_20a72")
+level = ExtResource("2_6u0xc")
 
 [node name="Player" parent="." instance=ExtResource("1_obh00")]
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
-limit_left = -320
-limit_top = -20
-limit_right = 2015
-limit_bottom = 223
-limit_smoothed = true
-position_smoothing_enabled = true
-position_smoothing_speed = 2.0
-drag_horizontal_enabled = true
-drag_left_margin = 0.3
-drag_top_margin = 0.3
-drag_right_margin = 0.3
-drag_bottom_margin = 0.3
-editor_draw_limits = true
-editor_draw_drag_margin = true
 
 [node name="HUD" parent="." instance=ExtResource("2_rqcna")]
 
 [node name="Gun" parent="." instance=ExtResource("3_f8i8b")]
-
-[node name="Level Container" type="Node" parent="."]
 
 [connection signal="hit" from="Player" to="." method="_on_player_hit"]
 [connection signal="reload" from="Player" to="." method="_on_player_reload"]

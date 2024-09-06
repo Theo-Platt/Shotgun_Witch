@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://b7sw7id3n86uw"]
+
+[ext_resource type="Script" path="res://Player/Gun.gd" id="1_4uijf"]
+[ext_resource type="PackedScene" uid="uid://ckp1p86snh531" path="res://Projectiles/bullet.tscn" id="2_q88nr"]
+
+[node name="Gun" type="Node"]
+script = ExtResource("1_4uijf")
+projectile_scene = ExtResource("2_q88nr")

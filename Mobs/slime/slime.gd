@@ -37,7 +37,7 @@ func _on_animated_sprite_2d_animation_finished():
 	if state == S_DIE:
 		score_increase.emit()
 		print("slime involuntarily-terminating")
-		self.queue_free()
+		queue_free()
 
 
 #####################
@@ -101,11 +101,13 @@ func fall(delta):
 
 #plays the death animation then removes this Mob.
 func die():
-	$"Area2D/CollisionShape2D".disabled = true
-	$"World Collision".disabled = true
+	$"Hitbox/CollisionShape2D".set_deferred("disabled", true)
+	$"World Collision".set_deferred("disabled", true)
 	play_animation("die")
 
 
-
-func _on_area_2d_area_entered(area):
+func _on_hurtbox_area_entered(area):
 	state=S_DIE
+
+func _on_hitbox_area_entered(area):
+	queue_free()

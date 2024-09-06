@@ -1,70 +1,72 @@
-[gd_scene load_steps=22 format=3 uid="uid://bgriuffvjnycc"]
+[gd_scene load_steps=23 format=3 uid="uid://bgriuffvjnycc"]
 
 [ext_resource type="Script" path="res://Mobs/slime/slime.gd" id="1_7qy1h"]
-[ext_resource type="Texture2D" uid="uid://bw5fioemesyx1" path="res://Mobs/Assets/slime mob/Slime Mob Spritesheet.png" id="2_jmaqf"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hxeb8"]
+load_path = "res://.godot/imported/Slime Mob Spritesheet.png-39de2e9044088dcdd93bbd51a6eec667.ctex"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ij3jm"]
-atlas = ExtResource("2_jmaqf")
+atlas = SubResource("CompressedTexture2D_hxeb8")
 region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_sm1vc"]
-atlas = ExtResource("2_jmaqf")
+atlas = SubResource("CompressedTexture2D_hxeb8")
 region = Rect2(32, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nthsn"]
-atlas = ExtResource("2_jmaqf")
+atlas = SubResource("CompressedTexture2D_hxeb8")
 region = Rect2(64, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_c8tv1"]
-atlas = ExtResource("2_jmaqf")
+atlas = SubResource("CompressedTexture2D_hxeb8")
 region = Rect2(64, 64, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2j2jo"]
-atlas = ExtResource("2_jmaqf")
+atlas = SubResource("CompressedTexture2D_hxeb8")
 region = Rect2(96, 64, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bqsw4"]
-atlas = ExtResource("2_jmaqf")
+atlas = SubResource("CompressedTexture2D_hxeb8")
 region = Rect2(0, 96, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_yn60b"]
-atlas = ExtResource("2_jmaqf")
+atlas = SubResource("CompressedTexture2D_hxeb8")
 region = Rect2(32, 96, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5bg6k"]
-atlas = ExtResource("2_jmaqf")
+atlas = SubResource("CompressedTexture2D_hxeb8")
 region = Rect2(64, 96, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_i6ihf"]
-atlas = ExtResource("2_jmaqf")
+atlas = SubResource("CompressedTexture2D_hxeb8")
 region = Rect2(96, 96, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hyhno"]
-atlas = ExtResource("2_jmaqf")
+atlas = SubResource("CompressedTexture2D_hxeb8")
 region = Rect2(64, 32, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_orc7v"]
-atlas = ExtResource("2_jmaqf")
+atlas = SubResource("CompressedTexture2D_hxeb8")
 region = Rect2(96, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pykg1"]
-atlas = ExtResource("2_jmaqf")
+atlas = SubResource("CompressedTexture2D_hxeb8")
 region = Rect2(96, 32, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_grayt"]
-atlas = ExtResource("2_jmaqf")
+atlas = SubResource("CompressedTexture2D_hxeb8")
 region = Rect2(0, 32, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7ve6v"]
-atlas = ExtResource("2_jmaqf")
+atlas = SubResource("CompressedTexture2D_hxeb8")
 region = Rect2(32, 32, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wsp03"]
-atlas = ExtResource("2_jmaqf")
+atlas = SubResource("CompressedTexture2D_hxeb8")
 region = Rect2(0, 64, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_henjq"]
-atlas = ExtResource("2_jmaqf")
+atlas = SubResource("CompressedTexture2D_hxeb8")
 region = Rect2(32, 64, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_1n67o"]
@@ -157,11 +159,15 @@ height = 16.0
 radius = 5.0
 height = 16.0
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_k54dc"]
+radius = 5.0
+height = 16.0
+
 [node name="Slime Mob" type="CharacterBody2D" groups=["slime"]]
 position = Vector2(5, 0)
 collision_layer = 16
-collision_mask = 9
 script = ExtResource("1_7qy1h")
+metadata/_edit_group_ = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
@@ -176,14 +182,25 @@ position = Vector2(0, 2)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_vowvl")
 
-[node name="Area2D" type="Area2D" parent="."]
-collision_layer = 0
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 16
 collision_mask = 8
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 position = Vector2(0, 2)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_se7gh")
 
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 6
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, 2)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_k54dc")
+metadata/_edit_group_ = true
+
 [connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
-[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
+[connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]

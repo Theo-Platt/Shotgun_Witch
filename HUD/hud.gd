@@ -23,6 +23,8 @@ var score = 0
 func _on_start_button_pressed():
 	$"Health Tracker".animation="Full Health"
 	$"Health Tracker".play()
+	for child in $"Ammo Tracker".get_children():
+		child.hide()
 	$StartButton.hide()
 	$Message.hide()
 	$ScoreTimer.start()
@@ -37,6 +39,7 @@ func _on_start_button_pressed():
 func game_over():
 	show_message("Game Over")
 	$ScoreTimer.stop()
+	
 	await get_tree().create_timer(5).timeout
 	
 	$Message.text = "Shotgun Witch"
@@ -81,6 +84,9 @@ func update_ammo(ammo):
 ###########
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	$StartButton.hide()
+	for child in $"Ammo Tracker".get_children():
+		child.hide()
 	$Message.text = "Shotgun Witch"
 	$Message.show()
 	$"Health Tracker".animation="Full Health"
@@ -88,8 +94,7 @@ func _ready():
 	# Make a one-shot timer and wait for it to finish.
 	await get_tree().create_timer(1.0).timeout
 	$StartButton.show()
-	for child in $"Ammo Tracker".get_children():
-		child.hide()
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
