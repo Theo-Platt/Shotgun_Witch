@@ -246,7 +246,3 @@ func play_animation(animation):
 	$AnimatedSprite2D.flip_h = mirror_sprite
 	$AnimatedSprite2D.animation = animation
 	$AnimatedSprite2D.play()
-
-
-
-

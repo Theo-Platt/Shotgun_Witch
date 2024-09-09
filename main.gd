@@ -72,7 +72,3 @@ func load_level(level_name : String):
 	if level_resource:
 		level_instance = level_resource.instantiate()
 		$"Level Container".add_child(level_instance)
-
-
-
-
