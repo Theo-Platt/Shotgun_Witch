@@ -19,7 +19,7 @@ func _on_visible_on_screen_notifier_2d_screen_exited():
 	queue_free()
 	pass # Replace with function body.
 
-func _on_body_entered(body):
+func _on_body_entered(_body):
 	print("Bullet Collision")
 	queue_free()
 	pass # Replace with function body.

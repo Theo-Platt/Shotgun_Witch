@@ -54,12 +54,14 @@ signal reload
 func _on_animated_sprite_2d_animation_finished():
 	if state == S_DYING:
 		state = S_DEAD
+		speed_multiplier = 0
 		if damage_type == D_SLIME_BODY:   play_animation("slime_body_dead")
 		elif damage_type == D_SLIME_HEAD: play_animation("slime_head_dead")
 	else:
 		$head.monitoring = true
 		$body.monitoring = true
 		damage_type = D_NONE
+		speed_multiplier = 1
 	
 	if state == S_JUMP: 
 		jump()
@@ -80,10 +82,11 @@ func _on_head_area_entered(body):
 	print("Hit")
 	if damage_type == D_NONE:
 		damage_type = D_SLIME_HEAD
+		#body.queue_free()
 		print("...in the head")
 		health = health - 1;
-		$head.monitoring = false
-		$body.monitoring = false
+		$head.set_deferred("monitoring",false)
+		$body.set_deferred("monitoring",false)
 		hit.emit(health)
 		
 		if health > 0: 
@@ -93,16 +96,18 @@ func _on_head_area_entered(body):
 		else:
 			play_animation("slime_head_dying")
 			state = S_DYING
+		speed_multiplier = 0.0
 
 # handle collisions with the body
 func _on_body_area_entered(body):
 	print("Hit")
 	if damage_type == D_NONE:
 		damage_type = D_SLIME_BODY
+		#body.queue_free()
 		print("...in the body")
 		health = health - 1;
-		$head.monitoring = false
-		$body.monitoring = false
+		$head.set_deferred("monitoring",false)
+		$body.set_deferred("monitoring",false)
 		hit.emit(health)
 		if health > 0: 
 			print("body damaged")
@@ -111,6 +116,7 @@ func _on_body_area_entered(body):
 		else:
 			play_animation("slime_body_dying")
 			state = S_DYING
+		speed_multiplier = 0.0
 
 
 #####################
@@ -142,6 +148,9 @@ func _process(delta):
 	if state == S_PAUSED: pass
 	else:
 		velocity.x = 0
+		if Input.is_action_pressed("move_right"):  set_movement(1)
+		elif Input.is_action_pressed("move_left"):   set_movement(-1)
+		
 		if !is_on_floor(): 
 			state = S_AIRBORNE
 			if fall_distance < velocity.y: fall_distance=velocity.y
@@ -149,6 +158,7 @@ func _process(delta):
 		if state == S_STAND || state == S_WALK:
 			if Input.is_action_just_pressed("shoot"):  
 				state = S_SHOOT
+				speed_multiplier = .2
 				if ammo > 0:
 					ammo -= 1
 					shoot.emit(mirror_sprite)
@@ -157,16 +167,17 @@ func _process(delta):
 					play_animation("no ammo")
 			elif Input.is_action_just_pressed("reload"): 
 				if ammo < ammo_cap:
-					ammo += 1
 					state = S_RELOAD
+					speed_multiplier = .4
+					ammo += 1
 					reload.emit()
 					play_animation("reload")
 			elif Input.is_action_just_pressed("jump"):
 				state = S_JUMP
+				speed_multiplier = .2
 				play_animation("jump")
 				
-			elif Input.is_action_pressed("move_right"):  set_movement(1)
-			elif Input.is_action_pressed("move_left"):   set_movement(-1)
+			
 			
 			if state == S_STAND:  play_animation("stand")
 			elif state == S_WALK: play_animation("walk")
@@ -174,28 +185,34 @@ func _process(delta):
 		elif state == S_AIRBORNE:
 			if is_on_floor(): 
 				state = S_LAND
-				if fall_distance > 150:
-					print("faceplant")
-					play_animation("faceplant")
-				elif fall_distance > 100:
-					print("faceplant")
-					play_animation("landing")
-					print("faceplant")
-				else:
-					play_animation("reload") #just because its short.
-					
 			else:
-				if Input.is_action_pressed("move_right"):  set_movement(1)
-				if Input.is_action_pressed("move_left"):   set_movement(-1)
 				velocity.y += gravity
-				
 				play_animation("falling")
 		
-		elif state == S_JUMP || state == S_LAND || state == S_SHOOT || state == S_RELOAD || state == S_DAMAGED || state == S_DYING:  
-			pass 
+		elif state == S_RELOAD: 
+			pass
+		
+		elif state == S_SHOOT: 
+			pass
+		
+		elif state == S_LAND:
+			if fall_distance > 150:
+				speed_multiplier = 0.0
+				play_animation("faceplant")
+			elif fall_distance > 100:
+				speed_multiplier = 0.4
+				play_animation("landing")
+			else:
+				speed_multiplier = 0.6
+				play_animation("reload") #just because its short.
+		
+		elif state == S_JUMP:
+			pass
+		
+		elif state == S_DAMAGED || state == S_DYING:
+			pass
 			# just wait for animations to end.
 			# State transition triggered in func _on_animated_sprite_2d_animation_finished()
-	
 
 		elif state == S_DEAD:
 			pass
@@ -205,6 +222,8 @@ func _process(delta):
 	
 		
 		velocity.x *= speed * speed_multiplier
+		#print("delta: ",delta)
+		velocity *= delta * 1/0.03334
 		move_and_slide()
 
 func set_movement(movement):

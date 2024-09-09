@@ -101,13 +101,13 @@ func fall(delta):
 
 #plays the death animation then removes this Mob.
 func die():
-	$"Hitbox/CollisionShape2D".set_deferred("disabled", true)
-	$"World Collision".set_deferred("disabled", true)
 	play_animation("die")
 
 
-func _on_hurtbox_area_entered(area):
+func _on_hurtbox_area_entered(_area):
+	$"Hitbox/CollisionShape2D".set_deferred("disabled", true)
+	$"World Collision".set_deferred("disabled", true)
 	state=S_DIE
 
-func _on_hitbox_area_entered(area):
+func _on_hitbox_area_entered(_area):
 	queue_free()

@@ -27,7 +27,6 @@ func _on_start_button_pressed():
 		child.hide()
 	$StartButton.hide()
 	$Message.hide()
-	$ScoreTimer.start()
 	for child in $"Ammo Tracker".get_children():
 		child.show()
 	start_game.emit()
@@ -38,8 +37,6 @@ func _on_start_button_pressed():
 ###############
 func game_over():
 	show_message("Game Over")
-	$ScoreTimer.stop()
-	
 	await get_tree().create_timer(5).timeout
 	
 	$Message.text = "Shotgun Witch"
@@ -59,8 +56,8 @@ func show_message(message):
 	pass
 
 # controls the score label
-func update_score(score):
-	$"Score Tracker/Score_Label".text = str(score)
+func update_score(new_score):
+	$"Score Tracker/Score_Label".text = str(new_score)
 
 # controls the health sprite
 func update_health(health):
@@ -97,6 +94,6 @@ func _ready():
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	$"Health Tracker".play()
 
